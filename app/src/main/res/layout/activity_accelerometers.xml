@@ -6,4 +6,65 @@
     android:layout_height="match_parent"
     tools:context="com.example.robin.myfirstapp.AccelerometersActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/accelerometerTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accelerometer values:"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/accelerometerX"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="X:"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="42dp" />
+
+        <TextView
+            android:id="@+id/accelerometerY"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Y:" />
+
+        <TextView
+            android:id="@+id/accelerometerZ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Z:" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/accelerometerDirection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:text="..." />
+        </LinearLayout>
+
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

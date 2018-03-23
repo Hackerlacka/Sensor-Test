@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startCompass(View view) {
         Intent intent = new Intent(this, CompassActivity.class);
-        // TODO Optional parameters
+        // TODO Send optional parameters
         startActivity(intent);
     }
 

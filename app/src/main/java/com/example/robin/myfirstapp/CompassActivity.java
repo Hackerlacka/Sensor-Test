@@ -86,7 +86,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-
+        // Not used
     }
 
     public void start() {
