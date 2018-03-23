@@ -33,6 +33,9 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     private Vibrator vibrator;
     private ToneGenerator toneGenerator;
 
+    // Vibration tutorial: https://stackoverflow.com/questions/13950338/how-to-make-an-android-device-vibrate
+    // Beep tutorial: https://stackoverflow.com/questions/12154940/how-to-make-a-beep-in-android
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
