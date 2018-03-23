@@ -5,6 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
+import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +28,10 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     private float[] mLastMagnetometer = new float[3];
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
+    private boolean vibrateAndSound = true;
+
+    private Vibrator vibrator;
+    private ToneGenerator toneGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,10 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         compass_img = (ImageView) findViewById(R.id.img_compass);
         txt_compass = (TextView) findViewById(R.id.txt_azimuth);
 
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
+        // 50% volume
+        toneGenerator = new ToneGenerator(AudioManager.STREAM_ALARM, 50);
         start();
     }
 
@@ -63,8 +74,17 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
         String where = "NW";
 
-        if (mAzimuth >= 350 || mAzimuth <= 10)
+        if (mAzimuth >= 350 || mAzimuth <= 10) {
             where = "N";
+            if(vibrateAndSound) {
+                vibrator.vibrate(100);
+                vibrateAndSound = false;
+                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200); // 200 is duration in ms
+            }
+        } else {
+            vibrateAndSound = true;
+        }
+
         if (mAzimuth < 350 && mAzimuth > 280)
             where = "NW";
         if (mAzimuth <= 280 && mAzimuth > 260)
