@@ -169,7 +169,6 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     protected void onResume() {
-        // TODO START THREAD??
         super.onResume();
         start();
     }
