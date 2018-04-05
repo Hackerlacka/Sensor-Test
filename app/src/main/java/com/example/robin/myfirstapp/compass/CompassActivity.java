@@ -1,4 +1,4 @@
-package com.example.robin.myfirstapp;
+package com.example.robin.myfirstapp.compass;
 
 import android.content.DialogInterface;
 import android.hardware.Sensor;
@@ -11,8 +11,11 @@ import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.robin.myfirstapp.R;
 
 public class CompassActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -28,10 +31,11 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     private float[] mLastMagnetometer = new float[3];
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
-    private boolean vibrateAndSound = true;
 
     private Vibrator vibrator;
     private ToneGenerator toneGenerator;
+    private Monitor monitor;
+    private SoundAndVibrationThread soundAndVibrationThread;
 
     // Vibration tutorial: https://stackoverflow.com/questions/13950338/how-to-make-an-android-device-vibrate
     // Beep tutorial: https://stackoverflow.com/questions/12154940/how-to-make-a-beep-in-android
@@ -49,7 +53,14 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
         // 50% volume
         toneGenerator = new ToneGenerator(AudioManager.STREAM_ALARM, 50);
-        start();
+
+        monitor = new Monitor();
+        soundAndVibrationThread = new SoundAndVibrationThread(monitor, vibrator, toneGenerator);
+        soundAndVibrationThread.start();
+
+        // We don't want call to start() here since onResume() also have a call to start(). onResume() is run directly after onCreate().
+        // Calling start() twice in a row creates an issue when closing the sensor listeners later
+        //start();
     }
 
     @Override
@@ -79,13 +90,9 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
         if (mAzimuth >= 350 || mAzimuth <= 10) {
             where = "N";
-            if(vibrateAndSound) {
-                vibrator.vibrate(100);
-                vibrateAndSound = false;
-                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200); // 200 is duration in ms
-            }
+            monitor.setSoundAndVibrate(true);
         } else {
-            vibrateAndSound = true;
+            monitor.setSoundAndVibrate(false);
         }
 
         if (mAzimuth < 350 && mAzimuth > 280)
@@ -147,10 +154,11 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
             mSensorManager.unregisterListener(this,mAccelerometer);
             mSensorManager.unregisterListener(this,mMagnetometer);
         }
-        else{
-            if(haveSensor)
-                mSensorManager.unregisterListener(this,mRotationV);
+        else if(haveSensor) {
+            mSensorManager.unregisterListener(this,mRotationV);
         }
+        // Close sound and vibration thread
+        soundAndVibrationThread.interrupt();
     }
 
     @Override
@@ -161,6 +169,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     protected void onResume() {
+        // TODO START THREAD??
         super.onResume();
         start();
     }

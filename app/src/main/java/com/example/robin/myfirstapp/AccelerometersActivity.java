@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 public class AccelerometersActivity extends AppCompatActivity implements SensorEventListener {
@@ -31,7 +32,9 @@ public class AccelerometersActivity extends AppCompatActivity implements SensorE
         accelerometerZ = (TextView) findViewById(R.id.accelerometerZ);
         accelerometerDirection = (TextView) findViewById(R.id.accelerometerDirection);
 
-        start();
+        // We don't want call to start() here since onResume() also have a call to start(). onResume() is run directly after onCreate().
+        // Calling start() twice in a row creates an issue when closing the sensor listeners later
+        //start();
     }
 
     public void start() {
