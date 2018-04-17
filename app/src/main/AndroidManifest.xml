@@ -22,7 +22,7 @@
         <activity
             android:name=".compass.CompassActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".AccelerometersActivity"
+        <activity android:name=".accelerometer.AccelerometersActivity"
             android:screenOrientation="portrait" />
     </application>
 

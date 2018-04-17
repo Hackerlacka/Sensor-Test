@@ -1,4 +1,4 @@
-package com.example.robin.myfirstapp;
+package com.example.robin.myfirstapp.accelerometer;
 
 import android.content.DialogInterface;
 import android.hardware.Sensor;
@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.robin.myfirstapp.R;
+
 public class AccelerometersActivity extends AppCompatActivity implements SensorEventListener {
 
     private TextView accelerometerX, accelerometerY, accelerometerZ, accelerometerDirection;
@@ -18,6 +20,8 @@ public class AccelerometersActivity extends AppCompatActivity implements SensorE
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private boolean haveSensor = false;
+    private Monitor monitor;
+    private SoundThread soundThread;
 
     private float[] lastAccelerometer = new float[3];
 
@@ -31,6 +35,10 @@ public class AccelerometersActivity extends AppCompatActivity implements SensorE
         accelerometerY = (TextView) findViewById(R.id.accelerometerY);
         accelerometerZ = (TextView) findViewById(R.id.accelerometerZ);
         accelerometerDirection = (TextView) findViewById(R.id.accelerometerDirection);
+
+        monitor = new Monitor();
+        soundThread = new SoundThread(this, monitor);
+        soundThread.start();
 
         // We don't want call to start() here since onResume() also have a call to start(). onResume() is run directly after onCreate().
         // Calling start() twice in a row creates an issue when closing the sensor listeners later
@@ -96,6 +104,13 @@ public class AccelerometersActivity extends AppCompatActivity implements SensorE
                     accelerometerDirection.setText("(FRONT) DOWN");
                 }
             }
+
+            if(z < SensorManager.GRAVITY_EARTH * -0.75f) {
+                monitor.setSound(true);
+            } else {
+                monitor.setSound(false);
+                soundThread.interrupt();
+            }
         }
     }
 
@@ -108,6 +123,10 @@ public class AccelerometersActivity extends AppCompatActivity implements SensorE
         if(haveSensor){
             sensorManager.unregisterListener(this, accelerometer);
         }
+
+        // Close sound and vibration thread
+        monitor.setClose(true);
+        soundThread.interrupt();
     }
 
     @Override
